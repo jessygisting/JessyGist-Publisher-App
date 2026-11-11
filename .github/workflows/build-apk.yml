@@ -3,14 +3,18 @@ name: Build JessyGist Publisher APK
 on: [workflow_dispatch, push]
 
 permissions:
-contents: read
+  contents: read
 
 jobs:
-build:
-runs-on: ubuntu-latest
-steps:
-- name: Checkout repository
-uses: actions/checkout@v4
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check Android project ZIP
+        run: test -f JessyGistPublisher-Android-Project-FIXED.zip
 
       - name: Extract Android project
         run: |
@@ -18,41 +22,39 @@ uses: actions/checkout@v4
           unzip -o JessyGistPublisher-Android-Project-FIXED.zip -d unpacked
 
       - name: Copy project files
+        run: cp -R unpacked/. .
+
+      - name: Check project files
         run: |
-          cp -R unpacked/. .
+          test -f gradlew
+          test -f fixes/MainActivity.kt
 
-  - name: Verify project files
-    run: |
-      test -f gradlew
-      test -f app/build.gradle || test -f app/build.gradle.kts
-      test -f fixes/MainActivity.kt
+      - name: Apply corrected MainActivity
+        run: |
+          mkdir -p app/src/main/java/com/jessygist/publisher
+          cp fixes/MainActivity.kt app/src/main/java/com/jessygist/publisher/MainActivity.kt
 
-  - name: Apply corrected MainActivity
-    run: |
-      mkdir -p app/src/main/java/com/jessygist/publisher
-      cp fixes/MainActivity.kt app/src/main/java/com/jessygist/publisher/MainActivity.kt
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
 
-  - name: Set up Java
-    uses: actions/setup-java@v4
-    with:
-      distribution: temurin
-      java-version: '17'
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v4
 
-  - name: Set up Android SDK
-    uses: android-actions/setup-android@v4
+      - name: Install Android SDK packages
+        run: sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0"
 
-  - name: Install Android SDK packages
-    run: sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0"
+      - name: Grant Gradle permission
+        run: chmod +x gradlew
 
-  - name: Grant Gradle permission
-    run: chmod +x gradlew
+      - name: Build JessyGist APK
+        run: ./gradlew --no-daemon assembleDebug
 
-  - name: Build APK
-    run: ./gradlew --no-daemon assembleDebug
-
-  - name: Upload APK
-    uses: actions/upload-artifact@v4
-    with:
-      name: JessyGist-Publisher-APK
-      path: app/build/outputs/apk/debug/app-debug.apk
-      if-no-files-found: error
+      - name: Upload JessyGist APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: JessyGist-Publisher-APK
+          path: app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
