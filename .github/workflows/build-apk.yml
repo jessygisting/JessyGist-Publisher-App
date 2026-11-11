@@ -19,7 +19,7 @@ jobs:
 
       - name: Extract Android project
         run: |
-          unzip -o JessyGistPublisher-Android-Project.zip -d unpacked
+          unzip -o JessyGistPublisher-Android-Project-FIXED.zip -d unpacked
           cp -R unpacked/JessyGistPublisher/. .
 
       - name: Set up Java
