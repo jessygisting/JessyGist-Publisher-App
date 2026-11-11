@@ -8,10 +8,9 @@ contents: read
 jobs:
 build:
 runs-on: ubuntu-latest
-
 steps:
-  - name: Checkout repository
-    uses: actions/checkout@v4
+- name: Checkout repository
+uses: actions/checkout@v4
 
   - name: Extract Android project
     run: unzip -o JessyGistPublisher-Android-Project-FIXED.zip -d unpacked
@@ -19,7 +18,7 @@ steps:
   - name: Copy project files
     run: cp -R unpacked/. .
 
-  - name: Verify Android project files
+  - name: Verify project files
     run: |
       test -f gradlew
       test -f app/build.gradle || test -f app/build.gradle.kts
