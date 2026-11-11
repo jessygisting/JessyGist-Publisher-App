@@ -19,7 +19,7 @@ jobs:
 
       - name: Extract Android project
         run: |
-          unzip JessyGistPublisher-Android-Project.zip -d unpacked
+          unzip -o JessyGistPublisher-Android-Project.zip -d unpacked
           cp -R unpacked/JessyGistPublisher/. .
 
       - name: Set up Java
@@ -30,16 +30,21 @@ jobs:
 
       - name: Set up Android SDK
         uses: android-actions/setup-android@v4
-        with:
-          packages: platform-tools
+
+      - name: Install Android SDK packages
+        run: |
+          sdkmanager "platform-tools" \
+            "platforms;android-35" \
+            "build-tools;35.0.0"
+
+      - name: Grant Gradle permission
+        run: chmod +x gradlew
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
-        with:
-          gradle-version: '8.10.2'
 
       - name: Build APK
-        run: gradle assembleDebug
+        run: ./gradlew --no-daemon assembleDebug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
