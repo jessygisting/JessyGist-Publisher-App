@@ -24,6 +24,10 @@
         {
           "name": "Copy project files",
           "run": "cp -R unpacked/. ."
+          {
+  "name": "Apply corrected MainActivity",
+  "run": "cp fixes/MainActivity.kt app/src/main/java/com/jessygist/publisher/MainActivity.kt"
+}
         },
         {
           "name": "Set up Java",
