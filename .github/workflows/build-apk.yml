@@ -1,11 +1,11 @@
-name: JessyGist APK Build Test
+name: JessyGist Test
 
-on:
-workflow_dispatch:
+'on':
+workflow_dispatch: {}
 
 jobs:
 test:
 runs-on: ubuntu-latest
 steps:
-- name: Test workflow
-run: echo "JessyGist workflow is working"
+- name: Test
+run: echo "Workflow is working"
