@@ -12,10 +12,14 @@ steps:
 - name: Checkout repository
 uses: actions/checkout@v4
 
-run: unzip -o JessyGistPublisher-Android-Project-FIXED.zip -d unpacked
+      - name: Extract Android project
+        run: |
+          mkdir -p unpacked
+          unzip -o JessyGistPublisher-Android-Project-FIXED.zip -d unpacked
 
-  - name: Copy project files
-    run: cp -R unpacked/. .
+      - name: Copy project files
+        run: |
+          cp -R unpacked/. .
 
   - name: Verify project files
     run: |
